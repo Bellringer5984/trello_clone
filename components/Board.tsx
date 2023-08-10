@@ -72,11 +72,25 @@ function Board() {
 
       } else {
         //Dragging to another column
-      }
-      
+        const finishTodos = Array.from(finishCol.todos);
+        finishTodos.splice(destination.index, 0, todoMoved);
+
+        const newColumns = new Map(board.columns);
+        const newCol = { 
+          id: startCol.id,
+          todos: newTodos,
+        };
+
+        newColumns.set(startCol.id, newCol);
+        newColumns.set(finishCol.id, {
+          id: finishCol.id,
+          todos: finishTodos,
+        });
+
+        setBoardState({ ...board, columns: newColumns })
+      }  
     } 
 
-  console.log(board)
   return (
     <DragDropContext onDragEnd={handleOnDragEnd}>
         <Droppable droppableId='board' direction='horizontal' type="column">
