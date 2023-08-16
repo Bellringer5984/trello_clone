@@ -1,5 +1,6 @@
 import { databases, storage } from '@/appwrite';
 import { getTodosGroupedByColumn } from '@/lib/getTodosGroupedByColumn';
+import { TypedColumn, Board, Todo } from '@/typings';
 import { TodoComment } from 'typescript';
 import { create } from 'zustand'
 
@@ -8,6 +9,11 @@ interface BoardState {
     getBoard: () => void;
     setBoardState: (board: Board) => void;
     updateTodoInDB: (todo: Todo, columnId: TypedColumn) => void;
+    newTaskInput: string;
+    newTaskType: TypedColumn;
+
+    setNewTaskInput: (input: string) => void;
+    setNewTaskType: (columnId: TypedColumn) => void;
 
     searchString: string;
     setSearchString: (searchString: string) => void;
@@ -20,7 +26,9 @@ export const useBoardStore = create<BoardState>((set, get) => ({
         columns: new Map<TypedColumn, Column>(),
     },
     searchString: "",
+    newTaskInput: "",
     setSearchString: (searchString) => set({ searchString }),
+    newTaskType: "todo",
 
     getBoard: async() => {
         const board = await getTodosGroupedByColumn();
@@ -47,6 +55,9 @@ deleteTask: async (taskIndex: number, todo: TodoComment, id: TypedColumn) => {
         todo.$id,
     )
 },
+
+setNewTaskInput: (input: string) => set({ newTaskInput: input}),
+setNewTaskType: (columnId: TypedColumn) => set({ newTaskType: columnId }),
 
 updateTodoInDB: async(todo, columnId) => {
     await databases.updateDocument(
