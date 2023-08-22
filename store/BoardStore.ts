@@ -1,6 +1,6 @@
 import { databases, storage } from '@/appwrite';
 import { getTodosGroupedByColumn } from '@/lib/getTodosGroupedByColumn';
-import { TypedColumn, Board, Todo } from '@/typings';
+import { TypedColumn, Board, Todo, Column } from '@/typings';
 import { TodoComment } from 'typescript';
 import { create } from 'zustand'
 
@@ -11,12 +11,14 @@ interface BoardState {
     updateTodoInDB: (todo: Todo, columnId: TypedColumn) => void;
     newTaskInput: string;
     newTaskType: TypedColumn;
+    image: File | null;
 
     setNewTaskInput: (input: string) => void;
     setNewTaskType: (columnId: TypedColumn) => void;
 
     searchString: string;
     setSearchString: (searchString: string) => void;
+    setImage: (image: File | null) => void;
 
     deleteTask: ( taskIndex: number, todoId: TodoComment, id: TypedColumn) => void;
 }
@@ -29,6 +31,7 @@ export const useBoardStore = create<BoardState>((set, get) => ({
     newTaskInput: "",
     setSearchString: (searchString) => set({ searchString }),
     newTaskType: "todo",
+    image: null,
 
     getBoard: async() => {
         const board = await getTodosGroupedByColumn();
@@ -58,6 +61,7 @@ deleteTask: async (taskIndex: number, todo: TodoComment, id: TypedColumn) => {
 
 setNewTaskInput: (input: string) => set({ newTaskInput: input}),
 setNewTaskType: (columnId: TypedColumn) => set({ newTaskType: columnId }),
+setImage: (image: File | null) => set({ image }),
 
 updateTodoInDB: async(todo, columnId) => {
     await databases.updateDocument(
