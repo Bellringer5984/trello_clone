@@ -19,7 +19,7 @@ const idToColumnText: {
   done: "Done",
 };
 
-function Column({ id, todos, index }: Props) {
+function Columns({ id, todos, index }: Props) {
   const [searchString] = useBoardStore((state) => [state.searchString])
   const openModal = useModalStore((state) => state.openModal)
 
@@ -96,4 +96,4 @@ function Column({ id, todos, index }: Props) {
   );
 }
 
-export default Column;
+export default Columns;

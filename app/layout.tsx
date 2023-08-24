@@ -1,7 +1,7 @@
 import Modal from '@/components/Modal'
 import './globals.css'
 
-export const metadata: Metadata = {
+export const metadata = {
   title: 'Trello 2.0C Clone',
   description: '',
 }
