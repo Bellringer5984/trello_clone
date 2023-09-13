@@ -1,51 +1,48 @@
 "use client";
 
-import { FormEvent, Fragment, useRef } from "react";
+import { FormEvent, Fragment, useRef, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { useModalStore } from "@/store/ModalStore";
-import { useBoardStore } from "@/store/BoardStore";
-
 import TaskTypeRadioGroup from "./TaskTypeRadioGroup";
-import Image from "next/image";
+import { useBoardStore } from "@/store/BoardStore";
 import { PhotoIcon } from "@heroicons/react/24/solid";
+import Image from "next/image";
 
 function Modal() {
   const imagePickerRef = useRef<HTMLInputElement>(null);
-  const [
-    addTask,
-    image,
-    setImage,
-    newTaskInput,
-    setNewTaskInput,
-    newTaskType,
-  ] = useBoardStore((state) => [
-    state.addTask,
-    state.newTaskInput,
-    state.setNewTaskInput,
-    state.image,
-    state.setImage,
-    state.newTaskType,
-  ]);
+
   const [isOpen, closeModal] = useModalStore((state) => [
     state.isOpen,
     state.closeModal,
   ]);
 
-  const handleSubmit = (e:FormEvent<HTMLFormElement>) => {
+  const [newTaskInput, setNewTaskInput, addTask, newTaskType, setImage, image] =
+    useBoardStore((state) => [
+      state.newTaskInput,
+      state.setNewTaskInput,
+      state.addTask,
+      state.newTaskType,
+      state.setImage,
+      state.image,
+    ]);
+
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!newTaskInput) return;
 
-    addTask(newTaskInput, newTaskType, image)
-    setImage(null)
+    addTask(newTaskInput, newTaskType, image);
+    setImage(null);
     closeModal();
-  }
+  };
 
   return (
-    // Use the `Transition` component at the root level
     <Transition appear show={isOpen} as={Fragment}>
-      <Dialog as="form"
-      onSubmit={handleSubmit}
-      className="relative z-10" onClose={closeModal}>
+      <Dialog
+        as="form"
+        onSubmit={handleSubmit}
+        className="relative z-10"
+        onClose={closeModal}
+      >
         <Transition.Child
           as={Fragment}
           enter="ease-out duration-300"
@@ -76,7 +73,6 @@ function Modal() {
                 >
                   Add a Task
                 </Dialog.Title>
-
                 <div className="mt-2">
                   <input
                     type="text"
@@ -89,30 +85,30 @@ function Modal() {
 
                 <TaskTypeRadioGroup />
 
+                {/* File Input goes here... */}
                 <div className="mt-2">
                   <button
-                    type="button"
                     onClick={() => {
                       imagePickerRef.current?.click();
                     }}
+                    type="button"
                     className="w-full border border-gray-300 rounded-md outline-none p-5 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
                   >
                     <PhotoIcon className="h-6 w-6 mr-2 inline-block" />
                     Upload Image
                   </button>
-                </div>
-
-                <div>
                   {image && (
                     <Image
                       alt="Uploaded Image"
                       width={200}
                       height={200}
-                      className="w-full h-44 object-cover mt-2 filter hover:grayscale transition-all duration-150 cursor-not-allowed"
-                      src={URL.createObjectURL(image)}
+                      className="w-full h-44 object-cover mt-2 filter hover:grayscale
+                      transition-all duration-150 cursor-not-allowed
+                    "
                       onClick={() => {
                         setImage(null);
                       }}
+                      src={URL.createObjectURL(image)}
                     />
                   )}
 
@@ -132,7 +128,7 @@ function Modal() {
                   <button
                     type="submit"
                     disabled={!newTaskInput}
-                    className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 test-sm font-md text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:bg-gray-100 disabled:text-gray-300 disabled:cursor-not-allowed"
+                    className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:bg-gray-100 disabled:text-gray-300 disabled:cursor-not-allowed"
                   >
                     Add Task
                   </button>
